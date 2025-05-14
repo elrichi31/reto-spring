@@ -1,6 +1,7 @@
 package com.tcs.reto.service;
 
 import com.tcs.reto.entity.Cliente;
+import com.tcs.reto.exception.BadRequestException;
 import com.tcs.reto.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class ClienteService {
 
     public Cliente guardarCliente(Cliente cliente) {
         if (clienteRepository.findByIdentificacion(cliente.getIdentificacion()).isPresent()) {
-            throw new RuntimeException("Ya existe un cliente con la misma identificación.");
+            throw new BadRequestException("Ya existe un cliente con la misma identificación.");
         }
         return clienteRepository.save(cliente);
     }

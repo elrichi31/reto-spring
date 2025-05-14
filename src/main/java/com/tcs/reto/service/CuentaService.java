@@ -2,6 +2,7 @@ package com.tcs.reto.service;
 
 import com.tcs.reto.entity.Cliente;
 import com.tcs.reto.entity.Cuenta;
+import com.tcs.reto.exception.BadRequestException;
 import com.tcs.reto.repository.CuentaRepository;
 import com.tcs.reto.repository.ClienteRepository;
 
@@ -33,12 +34,12 @@ public class CuentaService {
 
     public Cuenta guardarCuenta(Cuenta cuenta) {
         if (cuentaRepository.findByNumeroCuenta(cuenta.getNumeroCuenta()).isPresent()) {
-            throw new RuntimeException("Ya existe una cuenta con ese número.");
+            throw new BadRequestException("Ya existe una cuenta con ese número.");
         }
 
         Long clienteId = cuenta.getCliente().getId();
         Cliente clienteCompleto = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+                .orElseThrow(() -> new BadRequestException("Cliente no encontrado"));
 
         cuenta.setCliente(clienteCompleto);
         return cuentaRepository.save(cuenta);
