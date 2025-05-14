@@ -25,6 +25,9 @@ public class ClienteService {
     }
 
     public Cliente guardarCliente(Cliente cliente) {
+        if (clienteRepository.findByIdentificacion(cliente.getIdentificacion()).isPresent()) {
+            throw new RuntimeException("Ya existe un cliente con la misma identificación.");
+        }
         return clienteRepository.save(cliente);
     }
 

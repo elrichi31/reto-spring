@@ -18,7 +18,6 @@ public class Movimiento {
     private LocalDateTime fecha;
     private String tipoMovimiento;
     private Double valor;
-    private Double saldo;
 
     @ManyToOne
     @JoinColumn(name = "cuenta_id")
