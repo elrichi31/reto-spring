@@ -5,35 +5,40 @@ import com.tcs.reto.service.ClienteService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
 public class ClienteController {
 
-    private final ClienteService clienteService;
+    private final ClienteService service;
 
-    public ClienteController(ClienteService clienteService) {
-        this.clienteService = clienteService;
+    public ClienteController(ClienteService service) {
+        this.service = service;
     }
 
     @GetMapping
-    public List<Cliente> listarTodos() {
-        return clienteService.listarClientes();
+    public List<Cliente> listar() {
+        return service.listarClientes();
     }
 
     @GetMapping("/{id}")
-    public Optional<Cliente> obtenerPorId(@PathVariable Long id) {
-        return clienteService.buscarPorId(id);
+    public Cliente obtener(@PathVariable Long id) {
+        return service.buscarPorId(id).orElseThrow();
     }
 
     @PostMapping
     public Cliente crear(@RequestBody Cliente cliente) {
-        return clienteService.guardarCliente(cliente);
+        return service.guardarCliente(cliente);
+    }
+
+    @PutMapping("/{id}")
+    public Cliente actualizar(@PathVariable Long id, @RequestBody Cliente nuevo) {
+        nuevo.setId(id);
+        return service.guardarCliente(nuevo);
     }
 
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Long id) {
-        clienteService.eliminarCliente(id);
+        service.eliminarCliente(id);
     }
 }
