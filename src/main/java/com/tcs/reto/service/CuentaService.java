@@ -33,6 +33,7 @@ public class CuentaService {
     }
 
     public Cuenta guardarCuenta(Cuenta cuenta) {
+
         if (cuentaRepository.findByNumeroCuenta(cuenta.getNumeroCuenta()).isPresent()) {
             throw new BadRequestException("Ya existe una cuenta con ese número.");
         }
@@ -42,6 +43,7 @@ public class CuentaService {
                 .orElseThrow(() -> new BadRequestException("Cliente no encontrado"));
 
         cuenta.setCliente(clienteCompleto);
+        cuenta.setSaldo(cuenta.getSaldoInicial());
         return cuentaRepository.save(cuenta);
     }
 

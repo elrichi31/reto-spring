@@ -33,10 +33,9 @@ public class MovimientoService {
         Cuenta cuenta = cuentaRepository.findById(cuentaId)
                 .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
 
-        Double saldoActual = cuenta.getSaldoInicial();
+        Double saldoActual = cuenta.getSaldo(); // usar saldo actual, no saldoInicial
         Double valor = movimiento.getValor();
 
-        // Sumar o restar según tipo
         switch (movimiento.getTipoMovimiento().toUpperCase()) {
             case "DEPOSITO":
                 saldoActual += valor;
@@ -51,10 +50,12 @@ public class MovimientoService {
                 throw new RuntimeException("Tipo de movimiento no válido");
         }
 
-        cuenta.setSaldoInicial(saldoActual);
+        cuenta.setSaldo(saldoActual); // actualizamos saldo actual, no saldoInicial
         cuentaRepository.save(cuenta);
 
-        movimiento.setCuenta(cuenta); // Actualizamos la relación
+        movimiento.setCuenta(cuenta);
+        movimiento.setSaldo(saldoActual); // guardamos el saldo luego del movimiento
+
         return movimientoRepository.save(movimiento);
     }
     public Movimiento editarMovimiento(Long id, Movimiento nuevo) {

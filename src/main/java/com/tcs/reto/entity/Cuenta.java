@@ -20,6 +20,8 @@ public class Cuenta {
 
     private Double saldoInicial;
 
+    private Double saldo;
+
     private Boolean estado;
 
     @ManyToOne
