@@ -30,8 +30,13 @@ public class DataLoader {
                 System.out.println("🟢 Clientes insertados");
 
                 // 2. Insertar cuentas con saldoInicial y saldo igual
-                Cuenta cu1 = cuentaRepo.save(new Cuenta(null, "123456789", Cuenta.TipoCuenta.AHORROS, 500.0, 500.0, true, c1));
-                Cuenta cu2 = cuentaRepo.save(new Cuenta(null, "987654321", Cuenta.TipoCuenta.CORRIENTE, 1000.0, 1000.0, true, c2));
+                Cuenta cu1 = new Cuenta(null, "123456789", Cuenta.TipoCuenta.AHORROS, 500.0, null, true, c1);
+                cu1.setSaldo(cu1.getSaldoInicial()); // 👈 Aseguramos el saldo actual
+                cu1 = cuentaRepo.save(cu1);
+
+                Cuenta cu2 = new Cuenta(null, "987654321", Cuenta.TipoCuenta.CORRIENTE, 1000.0, null, true, c2);
+                cu2.setSaldo(cu2.getSaldoInicial()); // 👈 Aseguramos el saldo actual
+                cu2 = cuentaRepo.save(cu2);
                 System.out.println("🟢 Cuentas insertadas");
 
                 // 3. Movimientos para cu1
