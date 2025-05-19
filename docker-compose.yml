@@ -13,6 +13,8 @@ services:
       - "5432:5432"
     networks:
       - pg-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
@@ -25,7 +27,29 @@ services:
       - "8081:80"
     networks:
       - pg-network
+    depends_on:
+      - postgres
+
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-api
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/retodb
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin123
+    networks:
+      - pg-network
 
 networks:
   pg-network:
     driver: bridge
+
+volumes:
+  pgdata:
