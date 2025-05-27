@@ -25,14 +25,41 @@ public class ClienteService {
         return clienteRepository.findById(id);
     }
 
-    public Cliente guardarCliente(Cliente cliente) {
+    public Cliente crearCliente(Cliente cliente) {
         if (clienteRepository.findByIdentificacion(cliente.getIdentificacion()).isPresent()) {
             throw new BadRequestException("Ya existe un cliente con la misma identificación.");
         }
         return clienteRepository.save(cliente);
     }
 
+    public Cliente editarCliente(Long id, Cliente clienteActualizado) {
+        Cliente existente = clienteRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Cliente no encontrado con ID: " + id));
+
+        // Validar si se intenta cambiar la identificación a una ya usada por otro
+        clienteRepository.findByIdentificacion(clienteActualizado.getIdentificacion())
+                .filter(c -> !c.getId().equals(id))
+                .ifPresent(c -> {
+                    throw new BadRequestException("Ya existe otro cliente con la misma identificación.");
+                });
+
+        // Aplicar cambios
+        existente.setNombre(clienteActualizado.getNombre());
+        existente.setGenero(clienteActualizado.getGenero());
+        existente.setEdad(clienteActualizado.getEdad());
+        existente.setIdentificacion(clienteActualizado.getIdentificacion());
+        existente.setDireccion(clienteActualizado.getDireccion());
+        existente.setTelefono(clienteActualizado.getTelefono());
+        existente.setContrasena(clienteActualizado.getContrasena());
+        existente.setEstado(clienteActualizado.getEstado());
+
+        return clienteRepository.save(existente);
+    }
+
     public void eliminarCliente(Long id) {
+        if (!clienteRepository.existsById(id)) {
+            throw new BadRequestException("No se puede eliminar: cliente no encontrado con ID " + id);
+        }
         clienteRepository.deleteById(id);
     }
 }
